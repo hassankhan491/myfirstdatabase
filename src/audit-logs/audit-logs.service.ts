@@ -1,0 +1,21 @@
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+
+@Injectable()
+export class AuditLogsService {
+  constructor(private prisma: PrismaService) {}
+
+  findAll() {
+    return this.prisma.auditLog.findMany({
+      include: { user: { select: { name: true, email: true } } },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  findOne(id: string) {
+    return this.prisma.auditLog.findUnique({
+      where: { id },
+      include: { user: { select: { name: true, email: true } } },
+    });
+  }
+}
